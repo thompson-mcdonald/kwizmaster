@@ -85,7 +85,11 @@ export default function GetData(props: GetDataProps) {
       ) : (
         <>
           {questions?.map((item) => {
-            return <div key={item.key}>{item.question}</div>
+            return (
+              <div key={item.key}>
+                {item.key} {item.question}
+              </div>
+            )
           })}
           <button onClick={() => setShowAnswers(true)}>Show answers</button>
           {showAnswers && (
