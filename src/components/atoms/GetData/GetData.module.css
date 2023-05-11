@@ -1,0 +1,43 @@
+.base {
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.base form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100vh;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.base form input {
+  padding: 0.5rem;
+  border-radius: 7px;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  font-size: 20px;
+}
+
+.base form div {
+  display: flex;
+  flex-direction: column;
+}
+
+.base form input[type="submit"] {
+  background: #111;
+  transition: transform 0.1s;
+}
+
+.base form input[type="submit"]:hover {
+  cursor: pointer;
+  transform: translateY(2px);
+}
+
+.base form input[type="submit"]:active {
+  cursor: pointer;
+  transform: translateY(4px);
+}

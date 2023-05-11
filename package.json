@@ -1,0 +1,28 @@
+{
+  "name": "adjsont",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "new": "cross-env HYGEN_TMPLS=generators hygen new"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "hygen": "^6.2.11"
+  },
+  "dependencies": {
+    "@types/node": "20.1.2",
+    "@types/react": "18.2.6",
+    "@types/react-dom": "18.2.4",
+    "eslint": "8.40.0",
+    "eslint-config-next": "13.4.1",
+    "next": "13.4.1",
+    "react": "18.2.0",
+    "openai": "^3.2.1",
+    "react-dom": "18.2.0",
+    "typescript": "5.0.4"
+  }
+}
