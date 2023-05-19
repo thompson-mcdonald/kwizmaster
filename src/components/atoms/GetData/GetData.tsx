@@ -1,6 +1,10 @@
 "use client"
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import styles from "./GetData.module.css"
+import Loader from "../Loader/Loader"
+import { generateSlug } from "random-word-slugs"
+import { createQuiz, updateQuestions, updateSlug } from "@/services/hasura"
+import { v4 as uuid } from "uuid"
 
 export interface GetDataProps {
   children?: ReactNode
@@ -18,12 +22,25 @@ export default function GetData(props: GetDataProps) {
   const [amount, setAmount] = useState<number>(5)
   const [subject, setSubject] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [difficulty, setDifficulty] = useState<string>("")
+  const [difficulty, setDifficulty] = useState<string>("Easy")
   const [questions, setQuestions] = useState<any[]>([])
   const [answers, setAnswers] = useState<any[]>([])
   const [showAnswers, setShowAnswers] = useState<boolean>(false)
+  const [slug, setSlug] = useState<string>(`${generateSlug(2)}`)
+  const [sessionId, setSessionId] = useState<string>("")
+  const [isGenerated, setIsGenerated] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (isGenerated && questions.length > 0) {
+      ;(async () => {
+        await updateQuestions(sessionId, questions)
+      })()
+    }
+  }, [isGenerated, questions])
 
   const onGenerate = async () => {
+    const id = uuid()
+    setSessionId(id)
     console.log("fetching data")
     setIsLoading(true)
     const response = await fetch("/api/generate-quiz", {
@@ -38,73 +55,116 @@ export default function GetData(props: GetDataProps) {
     console.log(resObj)
 
     const que = JSON.parse(resObj.result.content).questions
-    const ans = JSON.parse(resObj.result.content).answers
+    const ans = JSON.parse(resObj.result.content).questions.map(
+      (item: any) => item.answers
+    )
     setQuestions(que)
     setAnswers(ans)
     setIsLoading(false)
+
+    await createQuiz(id, questions, subject, slug)
+    setIsGenerated(true)
+  }
+
+  const slugHandler = async () => {
+    await updateSlug(sessionId, `/${slug}`)
   }
 
   return (
     <div className={styles.base}>
       {!questions.length ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault(), onGenerate()
-          }}
-        >
-          <h1>Quizmaster JSON</h1>
-          <div>
-            <label>Subject of data:</label>
-            <input
-              type="text"
-              placeholder="Knights in a dungeon..."
-              onChange={(event) => setSubject(event.target.value)}
-            />
-          </div>
-          <div>
-            <label>Amount of questions: {amount}</label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <label>Quiz difficulty:</label>
-            <select onChange={(e) => setDifficulty(e.target.value)}>
-              <option>Easy</option>
-              <option>Intermediate</option>
-              <option>Difficult</option>
-              <option>Expert level</option>
-            </select>
-          </div>
-          <input type="submit" value="Submit" />
-        </form>
-      ) : (
         <>
-          {questions?.map((item) => {
-            return (
-              <div key={item.key}>
-                {item.key} {item.question}
+          {isLoading ? (
+            <>
+              <Loader
+                speed={amount}
+                value={slug}
+                onSubmit={() => console.log("update and that")}
+                onChange={setSlug}
+              />
+            </>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault(), onGenerate()
+              }}
+              className={styles.init}
+            >
+              <h1>Quizmaster JSON</h1>
+              <div>
+                <label>Subject of data:</label>
+                <input
+                  type="text"
+                  placeholder="Knights in a dungeon..."
+                  onChange={(event) => setSubject(event.target.value)}
+                />
               </div>
-            )
-          })}
-          <button onClick={() => setShowAnswers(true)}>Show answers</button>
-          {showAnswers && (
-            <div className={styles.answers}>
-              {answers?.map((item) => {
-                return (
-                  <div key={item.key}>
-                    {item.key} {item.answer}
-                  </div>
-                )
-              })}
-            </div>
+              <div>
+                <label>Amount of questions: {amount}</label>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={amount}
+                  onChange={(e) => setAmount(Number(e.target.value))}
+                />
+              </div>
+              <div>
+                <label>Quiz difficulty:</label>
+                <select
+                  onChange={(e) => setDifficulty(e.target.value)}
+                  defaultValue={difficulty}
+                >
+                  <option>Easy</option>
+                  <option>Intermediate</option>
+                  <option>Difficult</option>
+                  <option>Expert level</option>
+                </select>
+              </div>
+              <input type="submit" value="Submit" disabled={isLoading} />
+            </form>
           )}
         </>
+      ) : (
+        <>
+          <ol>
+            {questions?.map((item) => {
+              return (
+                <li key={item.key}>
+                  {item.question}
+                  <ul>
+                    {item.answers?.map((item: any) => {
+                      return (
+                        <li key={item.key}>
+                          {item.answer}:{" "}
+                          {item.correct ? "correct" : "incorrect"}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </li>
+              )
+            })}
+          </ol>
+        </>
       )}
+      <form
+        className={styles.slug}
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (isGenerated) {
+            slugHandler()
+          }
+        }}
+      >
+        <input
+          type="text"
+          name="slug"
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+        />
+        <input type="submit" value="save" />
+      </form>
     </div>
   )
 }

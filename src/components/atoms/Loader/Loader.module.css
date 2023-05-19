@@ -1,0 +1,31 @@
+.loaderBase {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.base {
+  max-width: 1200px;
+  width: 80%;
+  height: 20px;
+  background: white;
+  border-radius: 40px;
+  overflow: hidden;
+}
+
+.loaderBase p {
+  text-align: center;
+}
+
+.loader {
+  width: 0;
+  background: red;
+  height: 20px;
+}
+
+.loader.active {
+  width: 100%;
+}

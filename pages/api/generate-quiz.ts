@@ -23,7 +23,7 @@ export default async function generate(
 
   const { subject, amount, difficulty } = JSON.parse(req.body) || []
   try {
-    const prompt = generatePrompt(subject, amount, difficulty)
+    const prompt = generatePrompt(subject, difficulty, amount)
     const msg = generateMessage("user", prompt)
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -35,6 +35,7 @@ export default async function generate(
 
     res.status(200).json({
       result,
+      message: msg,
     })
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
@@ -57,14 +58,39 @@ export function generatePrompt(
   difficulty?: string,
   amount?: number
 ) {
-  return `Write a ${difficulty ? difficulty : "intermediate level"} ${
+  return `Write a ${difficulty ? difficulty : "intermediate level"}, ${
     amount ? amount : 10
   } question quiz about ${
     subject ? subject : "Breaking Bad"
   }. Please write the questions and answers in the following format, and respond only with JSON. 
 
   For example:
-  {"questions": [ { key: "1", question: "Which character is nonverbal and communicates via a bell?"}], "answers": [ {key: "1", answer: "Hector Salamanca"}]}`
+  {
+    "questions": [
+      {
+        "key": 1,
+        "question": "Which planet is the largest?",
+        "answers": [
+          {
+            "key": 1,
+            "answer": "Jupiter",
+            "correct": false
+          },
+          {
+            "key": 1,
+            "answer": "Venus",
+            "correct": false
+          },
+          {
+            "key": 1,
+            "answer": "Mars",
+            "correct": false
+          }
+        ]
+      }
+    ]
+  }
+  `
 }
 
 export function generateMessage(

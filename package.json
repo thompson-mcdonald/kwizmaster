@@ -11,18 +11,24 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "hygen": "^6.2.11"
+    "hygen": "^6.2.11",
+    "@types/uuid": "^9.0.1",
+    "@types/graphqurl": "^1.0.1",
+    "@types/node": "20.1.2",
+    "@types/react": "18.2.6"
   },
   "dependencies": {
-    "@types/node": "20.1.2",
-    "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
+    "classnames": "^2.3.2",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
+    "graphqurl": "^1.0.1",
     "next": "13.4.1",
-    "react": "18.2.0",
     "openai": "^3.2.1",
+    "random-word-slugs": "^0.1.7",
+    "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "uuid": "^9.0.0"
   }
 }
