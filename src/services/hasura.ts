@@ -5,8 +5,8 @@ export const client = createClient({
 })
 
 const createQuizMutation = `
-mutation MyMutation($questions: jsonb = "", $sessionId: String = "", $slug: String = "", $subject: String = "") {
-    insert_quizzes(objects: {questions: $questions, sessionId: $sessionId, slug: $slug, subject: $subject}) {
+mutation MyMutation($questions: jsonb = "", $sessionId: String = "", $slug: String = "", $subject: String = "", $difficulty: String = "", $timestamp: timestamptz) {
+    insert_quizzes(objects: {questions: $questions, sessionId: $sessionId, slug: $slug, subject: $subject, difficulty: $difficulty, timestamp: $timestamp}) {
       returning {
         id
       }
@@ -18,7 +18,8 @@ export const createQuiz = async (
   sessionId: string,
   questions: any[],
   subject: string,
-  slug: string
+  slug: string,
+  difficulty: string
 ) => {
   const response = await client.query({
     query: createQuizMutation,
@@ -27,6 +28,8 @@ export const createQuiz = async (
       sessionId,
       slug,
       subject,
+      difficulty,
+      timestamp: new Date().toISOString,
     },
     headers: {
       "x-hasura-admin-secret": `${process.env.NEXT_PUBLIC_HASURA_GRAPHQL_ADMIN_SECRET}`,
@@ -79,4 +82,29 @@ export const updateQuestions = async (sessionId: string, questions: any[]) => {
     },
   })
   return response
+}
+
+const fetchQuizBySlugQuery = `
+query MyQuery($slug: String = "") {
+  quizzes(where: {slug: {_eq: $slug}}) {
+    difficulty
+    subject
+    slug
+    questions
+  }
+}
+`
+
+export const fetchQuizBySlug = async (slug: string) => {
+  const response = await client.query({
+    query: fetchQuizBySlugQuery,
+    variables: {
+      slug,
+    },
+    headers: {
+      "x-hasura-admin-secret": `${process.env.NEXT_PUBLIC_HASURA_GRAPHQL_ADMIN_SECRET}`,
+    },
+  })
+
+  return response.data.quizzes[0]
 }

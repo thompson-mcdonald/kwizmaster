@@ -1,0 +1,15 @@
+.base {
+  background: #3648ea;
+  display: inline-block;
+  border-radius: 40px;
+  padding: 0.5rem 1rem 1rem;
+  text-decoration: none;
+}
+
+.base h1 {
+  font-size: 32px;
+  line-height: 10px;
+  margin-bottom: 0.25rem;
+  color: #d9d9d9;
+  font-weight: normal;
+}

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "./Quiz.module.css"
 import { useFormik } from "formik"
 import classNames from "classnames"
@@ -13,14 +13,17 @@ export interface QuizProps {
       correct: boolean
     }[]
   }[]
+  slug?: string
 }
 
-export default function Quiz({ questions }: QuizProps) {
+export default function Quiz({ questions, slug }: QuizProps) {
+  console.log(questions)
+
   const [count, setCount] = useState<number>(0)
   const [step, setStep] = useState<number>(0)
   const [answered, setAnswered] = useState<number>(0)
   const [isComplete, setIsComplete] = useState<boolean>(false)
-  const questionsOnly = questions.map(({ question, key }) => {
+  const questionsOnly = questions?.map(({ question, key }) => {
     return {
       question,
       key: `q-${key}`,
@@ -59,7 +62,7 @@ export default function Quiz({ questions }: QuizProps) {
   }, [formik.values, count])
 
   useEffect(() => {
-    if (step == questions.length) {
+    if (step == questions?.length) {
       setIsComplete(true)
     }
   }, [step])
@@ -67,7 +70,7 @@ export default function Quiz({ questions }: QuizProps) {
   const iterateStep = (direction: "next" | "previous") => {
     switch (direction) {
       case "next": {
-        if (step < questions.length) {
+        if (step < questions?.length) {
           return setStep(step + 1)
         }
       }
@@ -121,6 +124,7 @@ export default function Quiz({ questions }: QuizProps) {
                                 answered: true,
                               })
                             }}
+                            disabled={formik.values[step]?.answered}
                           />
                         </div>
                       )
@@ -139,7 +143,9 @@ export default function Quiz({ questions }: QuizProps) {
               </button>
               <button
                 onClick={() => iterateStep("next")}
-                disabled={step === questions.length}
+                disabled={
+                  !formik.values[step]?.answered || step == questions?.length
+                }
               >
                 +
               </button>
