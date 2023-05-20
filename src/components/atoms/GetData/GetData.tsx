@@ -5,6 +5,7 @@ import Loader from "../Loader/Loader"
 import { generateSlug } from "random-word-slugs"
 import { createQuiz, updateQuestions, updateSlug } from "@/services/hasura"
 import { v4 as uuid } from "uuid"
+import Quiz from "@/components/layout/Quiz/Quiz"
 
 export interface GetDataProps {
   children?: ReactNode
@@ -127,7 +128,8 @@ export default function GetData(props: GetDataProps) {
         </>
       ) : (
         <>
-          <ol>
+          <Quiz questions={questions} />
+          {/* <ol>
             {questions?.map((item) => {
               return (
                 <li key={item.key}>
@@ -145,7 +147,7 @@ export default function GetData(props: GetDataProps) {
                 </li>
               )
             })}
-          </ol>
+          </ol> */}
         </>
       )}
       <form
