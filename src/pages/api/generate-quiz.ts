@@ -27,7 +27,7 @@ export default async function generate(
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       temperature: 0.7,
-      prompt: `prompt`,
+      prompt: `${prompt}`,
       max_tokens: 2000,
     })
     console.log(completion)
