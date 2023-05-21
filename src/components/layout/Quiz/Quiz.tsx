@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "./Quiz.module.css"
 import { useFormik } from "formik"
 import classNames from "classnames"
@@ -13,14 +13,17 @@ export interface QuizProps {
       correct: boolean
     }[]
   }[]
+  slug?: string
 }
 
-export default function Quiz({ questions }: QuizProps) {
+export default function Quiz({ questions, slug }: QuizProps) {
+  console.log(questions)
+
   const [count, setCount] = useState<number>(0)
   const [step, setStep] = useState<number>(0)
   const [answered, setAnswered] = useState<number>(0)
   const [isComplete, setIsComplete] = useState<boolean>(false)
-  const questionsOnly = questions.map(({ question, key }) => {
+  const questionsOnly = questions?.map(({ question, key }) => {
     return {
       question,
       key: `q-${key}`,
@@ -59,7 +62,7 @@ export default function Quiz({ questions }: QuizProps) {
   }, [formik.values, count])
 
   useEffect(() => {
-    if (step == questions.length) {
+    if (step == questions?.length) {
       setIsComplete(true)
     }
   }, [step])
@@ -67,7 +70,7 @@ export default function Quiz({ questions }: QuizProps) {
   const iterateStep = (direction: "next" | "previous") => {
     switch (direction) {
       case "next": {
-        if (step < questions.length) {
+        if (step < questions?.length) {
           return setStep(step + 1)
         }
       }
@@ -81,11 +84,16 @@ export default function Quiz({ questions }: QuizProps) {
 
   return (
     <div className={styles.base}>
-      {isComplete ? "" : `${count} / ${answered}`}
       <div className={styles.quizBase}>
         {isComplete ? (
-          <div>
-            You got {count} / {answered} answers right!
+          <div
+            className={classNames(styles.questionBase, {
+              [styles.active]: true,
+            })}
+          >
+            <h1>
+              You got {count} / {answered} answers right!
+            </h1>
           </div>
         ) : (
           <>
@@ -97,14 +105,24 @@ export default function Quiz({ questions }: QuizProps) {
                     [styles.active]: index == step,
                   })}
                 >
-                  <p>{item.question}</p>
+                  <div className={styles.counter}>
+                    {isComplete ? "" : `${count} / ${answered}`}
+                  </div>
+                  <h3>{item.question}</h3>
                   <div
                     key={item.key}
                     className={classNames(styles.answersBase)}
                   >
                     {questions[index].answers.map((ans) => {
                       return (
-                        <div key={ans.key} className={styles.optionBase}>
+                        <div
+                          key={ans.key}
+                          className={classNames(styles.optionBase, {
+                            [styles.disabled]: formik.values[index].answered,
+                            [styles.checked]:
+                              formik.values[index].answerKey === `a-${ans.key}`,
+                          })}
+                        >
                           <label htmlFor={`q-${item.key}-a-${ans.key}`}>
                             {ans.answer}
                           </label>
@@ -121,12 +139,14 @@ export default function Quiz({ questions }: QuizProps) {
                                 answered: true,
                               })
                             }}
+                            disabled={formik.values[step]?.answered}
                           />
                         </div>
                       )
                     })}
-                    {formik.values[index].correct && "Correct"}
                   </div>
+                  {formik.values[index].answered &&
+                    (formik.values[index].correct ? "Correct" : "Incorrect")}
                 </div>
               )
             })}
@@ -139,7 +159,9 @@ export default function Quiz({ questions }: QuizProps) {
               </button>
               <button
                 onClick={() => iterateStep("next")}
-                disabled={step === questions.length}
+                disabled={
+                  !formik.values[step]?.answered || step == questions?.length
+                }
               >
                 +
               </button>

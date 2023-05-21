@@ -6,6 +6,8 @@ import { generateSlug } from "random-word-slugs"
 import { createQuiz, updateQuestions, updateSlug } from "@/services/hasura"
 import { v4 as uuid } from "uuid"
 import Quiz from "@/components/layout/Quiz/Quiz"
+import { useRouter } from "next/navigation"
+import Logo from "../Logo/Logo"
 
 export interface GetDataProps {
   children?: ReactNode
@@ -19,14 +21,13 @@ interface Key {
 }
 
 export default function GetData(props: GetDataProps) {
-  const [data, setData] = useState<any[] | undefined>(undefined)
+  const router = useRouter()
   const [amount, setAmount] = useState<number>(5)
   const [subject, setSubject] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [difficulty, setDifficulty] = useState<string>("Easy")
   const [questions, setQuestions] = useState<any[]>([])
   const [answers, setAnswers] = useState<any[]>([])
-  const [showAnswers, setShowAnswers] = useState<boolean>(false)
   const [slug, setSlug] = useState<string>(`${generateSlug(2)}`)
   const [sessionId, setSessionId] = useState<string>("")
   const [isGenerated, setIsGenerated] = useState<boolean>(false)
@@ -35,6 +36,7 @@ export default function GetData(props: GetDataProps) {
     if (isGenerated && questions.length > 0) {
       ;(async () => {
         await updateQuestions(sessionId, questions)
+        router.push(`/quiz/${slug}`)
       })()
     }
   }, [isGenerated, questions])
@@ -63,7 +65,7 @@ export default function GetData(props: GetDataProps) {
     setAnswers(ans)
     setIsLoading(false)
 
-    await createQuiz(id, questions, subject, slug)
+    await createQuiz(id, questions, subject, slug, difficulty)
     setIsGenerated(true)
   }
 
@@ -91,44 +93,52 @@ export default function GetData(props: GetDataProps) {
               }}
               className={styles.init}
             >
-              <h1>Quizmaster JSON</h1>
-              <div>
-                <label>Subject of data:</label>
-                <input
-                  type="text"
-                  placeholder="Knights in a dungeon..."
-                  onChange={(event) => setSubject(event.target.value)}
-                />
+              {/* <h1>Quizmaster JSON</h1> */}
+              <div className={styles.logo}>
+                <Logo />
               </div>
-              <div>
-                <label>Amount of questions: {amount}</label>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  value={amount}
-                  onChange={(e) => setAmount(Number(e.target.value))}
-                />
+              <div className={styles.formBody}>
+                <div>
+                  <label htmlFor="subject">Subject of data:</label>
+                  <input
+                    id="subject"
+                    type="text"
+                    placeholder="Knights in a dungeon..."
+                    onChange={(event) => setSubject(event.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="amount">Amount of questions: {amount}</label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    id="amount"
+                    value={amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="difficulty">Quiz difficulty:</label>
+                  <select
+                    onChange={(e) => setDifficulty(e.target.value)}
+                    defaultValue={difficulty}
+                    id="difficulty"
+                  >
+                    <option>Easy</option>
+                    <option>Intermediate</option>
+                    <option>Difficult</option>
+                    <option>Expert level</option>
+                  </select>
+                </div>
+                <input type="submit" value="Submit" disabled={isLoading} />
               </div>
-              <div>
-                <label>Quiz difficulty:</label>
-                <select
-                  onChange={(e) => setDifficulty(e.target.value)}
-                  defaultValue={difficulty}
-                >
-                  <option>Easy</option>
-                  <option>Intermediate</option>
-                  <option>Difficult</option>
-                  <option>Expert level</option>
-                </select>
-              </div>
-              <input type="submit" value="Submit" disabled={isLoading} />
             </form>
           )}
         </>
       ) : (
         <>
-          <Quiz questions={questions} />
+          {/* <Quiz questions={questions} /> */}
           {/* <ol>
             {questions?.map((item) => {
               return (
@@ -150,7 +160,7 @@ export default function GetData(props: GetDataProps) {
           </ol> */}
         </>
       )}
-      <form
+      {/* <form
         className={styles.slug}
         onSubmit={(e) => {
           e.preventDefault()
@@ -166,7 +176,7 @@ export default function GetData(props: GetDataProps) {
           onChange={(e) => setSlug(e.target.value)}
         />
         <input type="submit" value="save" />
-      </form>
+      </form> */}
     </div>
   )
 }

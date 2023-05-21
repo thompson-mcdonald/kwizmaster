@@ -1,0 +1,26 @@
+@font-face {
+  font-family: "Junction";
+  src: url("/fonts/junction-bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Junction";
+  src: url("/fonts/junction-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Junction";
+  src: url("/fonts/junction-regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Junction", sans-serif;
+  padding: 0;
+  margin: 0;
+}

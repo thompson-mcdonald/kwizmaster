@@ -4,6 +4,9 @@
 .quizBase {
   position: relative;
   height: 500px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 800px;
 }
 
 .base ol {
@@ -12,9 +15,10 @@
 
 .answersBase {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   margin: 1rem 0;
+  gap: 1rem;
 }
 
 .optionBase {
@@ -29,6 +33,11 @@
   position: absolute;
   top: 0;
   min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
 }
 
 .questionBase.active {
@@ -48,4 +57,31 @@
 
 .base nav button {
   font-size: 32px;
+}
+
+.answersBase input[type="radio"] {
+  display: none;
+}
+
+.optionBase label {
+  background: rgba(245, 245, 245, 0.4);
+  padding: 1rem 1rem 1rem;
+  border-radius: 30px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.optionBase.disabled {
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+.optionBase.checked label {
+  font-weight: bold;
+  background: rgba(235, 235, 235, 0.8);
+}
+
+.counter {
+  margin: 1rem 0;
+  font-size: 20px;
 }

@@ -18,12 +18,14 @@
     "hygen": "^6.2.11"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.194",
     "@types/react-dom": "18.2.4",
     "classnames": "^2.3.2",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
     "formik": "^2.2.9",
     "graphqurl": "^1.0.1",
+    "lodash": "^4.17.21",
     "next": "13.4.1",
     "openai": "^3.2.1",
     "random-word-slugs": "^0.1.7",

@@ -8,10 +8,10 @@
 }
 
 .base {
-  max-width: 1200px;
+  max-width: 700px;
   width: 80%;
   height: 20px;
-  background: white;
+  background: #888;
   border-radius: 40px;
   overflow: hidden;
 }
@@ -22,7 +22,7 @@
 
 .loader {
   width: 0;
-  background: red;
+  background: #ec7785;
   height: 20px;
 }
 
