@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import styles from "./Quiz.module.css"
 import { useFormik } from "formik"
 import classNames from "classnames"
+import Logo from "@/components/atoms/Logo/Logo"
 
 export interface QuizProps {
   questions: {
@@ -106,6 +107,7 @@ export default function Quiz({ questions, slug }: QuizProps) {
                   })}
                 >
                   <div className={styles.counter}>
+                    <Logo />
                     {isComplete ? "" : `${count} / ${questions.length}`}
                   </div>
                   <h3>

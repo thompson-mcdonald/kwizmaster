@@ -92,14 +92,25 @@
 }
 
 .optionBase.correct label {
+  background: rgba(0, 245, 0, 0.3);
+}
+
+.optionBase.correct.checked label {
   background: rgba(0, 245, 0, 0.8);
 }
 
 .optionBase.inCorrect label {
-  background: pink;
+  background: rgba(223, 51, 51, 0.3);
+}
+
+.optionBase.inCorrect.checked label {
+  background: rgba(223, 51, 51, 0.8);
 }
 
 .counter {
   margin: 1rem 0;
   font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
