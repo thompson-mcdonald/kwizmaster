@@ -57,8 +57,8 @@ export default function GetData(props: GetDataProps) {
     const resObj = await response.json()
     console.log(resObj)
 
-    const que = JSON.parse(resObj.result.content).questions
-    const ans = JSON.parse(resObj.result.content).questions.map(
+    const que = JSON.parse(resObj.result).questions
+    const ans = JSON.parse(resObj.result).questions.map(
       (item: any) => item.answers
     )
     setQuestions(que)

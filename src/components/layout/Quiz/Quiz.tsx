@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import styles from "./Quiz.module.css"
 import { useFormik } from "formik"
 import classNames from "classnames"
+import Logo from "@/components/atoms/Logo/Logo"
 
 export interface QuizProps {
   questions: {
@@ -23,7 +24,7 @@ export default function Quiz({ questions, slug }: QuizProps) {
   const [step, setStep] = useState<number>(0)
   const [answered, setAnswered] = useState<number>(0)
   const [isComplete, setIsComplete] = useState<boolean>(false)
-  const questionsOnly = questions?.map(({ question, key }) => {
+  const questionsOnly = questions?.map(({ question }, key) => {
     return {
       question,
       key: `q-${key}`,
@@ -106,35 +107,47 @@ export default function Quiz({ questions, slug }: QuizProps) {
                   })}
                 >
                   <div className={styles.counter}>
-                    {isComplete ? "" : `${count} / ${answered}`}
+                    <Logo />
+                    {isComplete ? "" : `${count} / ${questions.length}`}
                   </div>
-                  <h3>{item.question}</h3>
+                  <h3>
+                    {" "}
+                    Question {index + 1}
+                    <br />
+                    <br />
+                    {item.question}
+                  </h3>
                   <div
                     key={item.key}
                     className={classNames(styles.answersBase)}
                   >
-                    {questions[index].answers.map((ans) => {
+                    {questions[index].answers.map((ans, key) => {
                       return (
                         <div
                           key={ans.key}
                           className={classNames(styles.optionBase, {
                             [styles.disabled]: formik.values[index].answered,
                             [styles.checked]:
-                              formik.values[index].answerKey === `a-${ans.key}`,
+                              formik.values[index].answerKey === `a-${key}`,
+                            [styles.correct]:
+                              formik.values[index].answered && ans.correct,
+                            [styles.inCorrect]:
+                              formik.values[index].answered && !ans.correct,
+                            [styles.answered]: formik.values[index].answered,
                           })}
                         >
-                          <label htmlFor={`q-${item.key}-a-${ans.key}`}>
+                          <label htmlFor={`q-${index}-a-${key}`}>
                             {ans.answer}
                           </label>
                           <input
                             type="radio"
-                            name={`q-${item.key}`}
-                            id={`q-${item.key}-a-${ans.key}`}
+                            name={`q-${index}`}
+                            id={`q-${index}-a-${key}`}
                             value={`q-${index}`}
                             onChange={() => {
                               formik.setFieldValue(`${index}`, {
                                 ...formik.values[index],
-                                answerKey: `a-${ans.key}`,
+                                answerKey: `a-${key}`,
                                 correct: ans.correct,
                                 answered: true,
                               })
@@ -150,7 +163,7 @@ export default function Quiz({ questions, slug }: QuizProps) {
                 </div>
               )
             })}
-            <nav>
+            <nav className={styles.buttonNav}>
               <button
                 onClick={() => iterateStep("previous")}
                 disabled={step === 0}
