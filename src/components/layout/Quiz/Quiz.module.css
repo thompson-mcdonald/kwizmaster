@@ -57,6 +57,11 @@
 
 .base nav button {
   font-size: 32px;
+  cursor: pointer;
+}
+
+.base nav button:disabled {
+  cursor: unset;
 }
 
 .answersBase input[type="radio"] {
@@ -79,6 +84,19 @@
 .optionBase.checked label {
   font-weight: bold;
   background: rgba(235, 235, 235, 0.8);
+  cursor: unset;
+}
+
+.optionBase.answered label {
+  cursor: unset;
+}
+
+.optionBase.correct label {
+  background: rgba(0, 245, 0, 0.8);
+}
+
+.optionBase.inCorrect label {
+  background: pink;
 }
 
 .counter {

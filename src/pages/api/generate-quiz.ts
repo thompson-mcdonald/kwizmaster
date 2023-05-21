@@ -24,18 +24,18 @@ export default async function generate(
   const { subject, amount, difficulty } = JSON.parse(req.body) || []
   try {
     const prompt = generatePrompt(subject, difficulty, amount)
-    const msg = generateMessage("user", prompt)
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
       temperature: 0.7,
-      messages: [msg],
+      prompt: `prompt`,
+      max_tokens: 2000,
     })
     console.log(completion)
-    const result = completion.data.choices[0].message
+    const result = completion.data.choices[0]
 
     res.status(200).json({
-      result,
-      message: msg,
+      result: result.text?.replace("\n", ""),
+      message: prompt,
     })
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
@@ -62,43 +62,8 @@ export function generatePrompt(
     amount ? amount : 10
   } question quiz about ${
     subject ? subject : "Breaking Bad"
-  }. Please write the questions and answers in the following format, and respond only with JSON. 
+  }. Please write the questions and answers in the following format, and respond in JSONB. Follow the structure of the example, do not truncate keys. Choices per question should never exceed 3 - 1 choice should be correct, 1 plausible and 1 ridiculous.
 
-  For example:
-  {
-    "questions": [
-      {
-        "key": 1,
-        "question": "Which planet is the largest?",
-        "answers": [
-          {
-            "key": 1,
-            "answer": "Jupiter",
-            "correct": false
-          },
-          {
-            "key": 1,
-            "answer": "Venus",
-            "correct": false
-          },
-          {
-            "key": 1,
-            "answer": "Mars",
-            "correct": false
-          }
-        ]
-      }
-    ]
-  }
+  {"questions": [{"question": "Which planet is the largest?","answers": [{"answer": "Jupiter", "correct": false},{"answer": "Venus", "correct": false},{"answer": "Mars", "correct": false}]}]}
   `
-}
-
-export function generateMessage(
-  role: "user" | "system" | "assistant",
-  content: string
-) {
-  return {
-    role,
-    content,
-  }
 }
