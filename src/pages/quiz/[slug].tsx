@@ -1,5 +1,6 @@
 import Quiz from "@/components/layout/Quiz/Quiz"
 import { fetchQuizBySlug } from "@/services/hasura"
+import Head from "next/head"
 
 export default function Page(props: any) {
   const { data } = props
@@ -9,6 +10,9 @@ export default function Page(props: any) {
   return (
     <>
       {/* {JSON.stringify(props)} */}
+      <Head>
+        <title>{data.subject} quiz - Kwizmaster</title>
+      </Head>
       {qList && <Quiz questions={qList} />}
     </>
   )
@@ -19,7 +23,6 @@ export async function getServerSideProps(context: any) {
 
   return {
     props: {
-      test: "truye",
       data,
     },
   }

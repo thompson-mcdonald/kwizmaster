@@ -84,11 +84,16 @@ export default function Quiz({ questions, slug }: QuizProps) {
 
   return (
     <div className={styles.base}>
-      {isComplete ? "" : `${count} / ${answered}`}
       <div className={styles.quizBase}>
         {isComplete ? (
-          <div>
-            You got {count} / {answered} answers right!
+          <div
+            className={classNames(styles.questionBase, {
+              [styles.active]: true,
+            })}
+          >
+            <h1>
+              You got {count} / {answered} answers right!
+            </h1>
           </div>
         ) : (
           <>
@@ -100,14 +105,24 @@ export default function Quiz({ questions, slug }: QuizProps) {
                     [styles.active]: index == step,
                   })}
                 >
-                  <p>{item.question}</p>
+                  <div className={styles.counter}>
+                    {isComplete ? "" : `${count} / ${answered}`}
+                  </div>
+                  <h3>{item.question}</h3>
                   <div
                     key={item.key}
                     className={classNames(styles.answersBase)}
                   >
                     {questions[index].answers.map((ans) => {
                       return (
-                        <div key={ans.key} className={styles.optionBase}>
+                        <div
+                          key={ans.key}
+                          className={classNames(styles.optionBase, {
+                            [styles.disabled]: formik.values[index].answered,
+                            [styles.checked]:
+                              formik.values[index].answerKey === `a-${ans.key}`,
+                          })}
+                        >
                           <label htmlFor={`q-${item.key}-a-${ans.key}`}>
                             {ans.answer}
                           </label>
@@ -129,8 +144,9 @@ export default function Quiz({ questions, slug }: QuizProps) {
                         </div>
                       )
                     })}
-                    {formik.values[index].correct && "Correct"}
                   </div>
+                  {formik.values[index].answered &&
+                    (formik.values[index].correct ? "Correct" : "Incorrect")}
                 </div>
               )
             })}

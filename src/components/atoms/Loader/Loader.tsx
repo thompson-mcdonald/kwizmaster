@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react"
 import styles from "./Loader.module.css"
 import classNames from "classnames"
+import { shuffle } from "lodash"
 
 export interface LoaderProps {
   speed: number
@@ -41,6 +42,7 @@ export default function Loader({
 }: LoaderProps) {
   const [active, setActive] = useState<boolean>(false)
   const [step, setStep] = useState<number>(0)
+  const promptList = shuffle(prompts)
 
   useEffect(() => {
     if (!active) {
@@ -60,7 +62,7 @@ export default function Loader({
     <div className={styles.loaderBase}>
       <div>
         <p>
-          {prompts?.map((item: string, index: number) => {
+          {promptList?.map((item: string, index: number) => {
             if (index === step) {
               return item
             }
